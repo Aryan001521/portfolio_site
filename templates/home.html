@@ -1,240 +1,441 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% if profile %}{{ profile.name }}{% else %}My Portfolio{% endif %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/static/style.css">
+
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <style>
+    /* ------- fallback styles (in case css missing) ------- */
+    :root{
+      --bg:#070b14;
+      --card:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --text:#e9eefc;
+      --muted:rgba(233,238,252,0.72);
+      --accent:#facc15;
+      --shadow: 0 18px 55px rgba(0,0,0,0.45);
+      --radius:18px;
+    }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; background: radial-gradient(1200px 500px at 20% 0%, rgba(79,70,229,0.25), transparent 60%), radial-gradient(1200px 500px at 80% 10%, rgba(250,204,21,0.12), transparent 55%), var(--bg); color:var(--text); }
+    a{ color:#9cc3ff; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    .container{ max-width:1100px; margin:0 auto; padding:28px 16px 70px; }
+    .nav{ position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(7,11,20,0.65); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .nav-inner{ max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;}
+    .brand{ font-weight:800; letter-spacing:0.2px; }
+    .menu{ display:flex; gap:14px; flex-wrap:wrap; }
+    .pill{ padding:8px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:999px; background: rgba(255,255,255,0.04); }
+    .pill:hover{ border-color: rgba(250,204,21,0.65); }
+    .hero{ margin-top:22px; padding:26px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); box-shadow: var(--shadow); display:flex; gap:18px; align-items:flex-start; }
+    .avatar{ height:92px; width:92px; border-radius:50%; object-fit:cover; border: 2px solid rgba(250,204,21,0.35); }
+    .avatar-fallback{ height:92px; width:92px; border-radius:50%; display:grid; place-items:center; font-weight:800; background: rgba(250,204,21,0.12); border:1px solid rgba(250,204,21,0.35); color: var(--text); }
+    .h-title{ font-size:34px; margin:0 0 6px; }
+    .h-sub{ margin:0 0 10px; color: var(--muted); font-size:16px; }
+    .h-bio{ margin:0; color: rgba(233,238,252,0.86); line-height:1.55; }
+    .cta-row{ margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius: 12px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--text); cursor:pointer; }
+    .btn:hover{ border-color: rgba(250,204,21,0.65); background: rgba(250,204,21,0.08); text-decoration:none; }
+    .btn-primary{ border-color: rgba(250,204,21,0.55); }
+    .section{ margin-top:34px; }
+    .section h2{ margin:0 0 8px; font-size:26px; }
+    .section p.lead{ margin:0 0 16px; color: var(--muted); }
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin: 12px 0 18px; }
+    input[type="text"], select{
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,0.12);
+      padding:10px 12px;
+      border-radius: 12px;
+      outline:none;
+    }
+    input[type="text"]{ min-width: 230px; }
+    select{ min-width: 160px; appearance:none; }
+    select option{ background-color: #0f172a; color:#fff; } /* fixes white options */
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
+    .card{ grid-column: span 6; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); border-radius: 16px; padding:16px; cursor:pointer; transition: transform .15s ease, border-color .15s ease; }
+    .card:hover{ transform: translateY(-2px); border-color: rgba(250,204,21,0.55); }
+    .card h3{ margin:0 0 6px; font-size:18px; }
+    .muted{ color: var(--muted); }
+    .card-img{ width:100%; max-height:190px; object-fit:cover; border-radius: 12px; border:1px solid rgba(255,255,255,0.10); margin:10px 0 10px; }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .chip{ font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(233,238,252,0.9); }
+    .links{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
+    .mini-img{ height:42px; width:42px; border-radius: 10px; object-fit:cover; border:1px solid rgba(255,255,255,0.10); }
+    .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    .list-card{ border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); border-radius: 16px; padding:16px; }
+    .skill-row{ display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .skill-row:last-child{ border-bottom:none; }
+    .tag{ font-size:12px; padding:5px 10px; border-radius:999px; border:1px solid rgba(250,204,21,0.35); background: rgba(250,204,21,0.08); }
+    .footer{ margin-top:44px; color: var(--muted); font-size:13px; text-align:center; }
+
+    /* Modal */
+    .modal-backdrop{ position:fixed; inset:0; background: rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:50; padding:18px; }
+    .modal{ width:min(900px, 96vw); border-radius: 18px; border:1px solid rgba(255,255,255,0.12); background: rgba(7,11,20,0.95); box-shadow: var(--shadow); overflow:hidden; }
+    .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding:16px; border-bottom:1px solid rgba(255,255,255,0.10); }
+    .modal-title{ margin:0; font-size:18px; }
+    .modal-close{ border:1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.04); color: var(--text); border-radius: 12px; padding:8px 12px; cursor:pointer; }
+    .modal-body{ padding:16px; }
+    .modal-body p{ color: rgba(233,238,252,0.86); line-height:1.55; }
+    .modal-img{ width:100%; max-height:320px; object-fit:cover; border-radius: 14px; border:1px solid rgba(255,255,255,0.10); }
+
+    @media (max-width: 860px){
+      .card{ grid-column: span 12; }
+      .two-col{ grid-template-columns: 1fr; }
+      .hero{ flex-direction: column; align-items:flex-start; }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Navbar -->
-  <nav class="nav">
+
+  <!-- NAV -->
+  <div class="nav">
     <div class="nav-inner">
-      <a class="brand" href="#home">
+      <div class="brand">
         {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %}
-      </a>
-
-      <div class="nav-links" id="navLinks">
-        <a class="nav-link" href="#home" data-target="home">Home</a>
-        <a class="nav-link" href="#projects" data-target="projects">Projects</a>
-        <a class="nav-link" href="#skills" data-target="skills">Skills</a>
-        <a class="nav-link" href="#experience" data-target="experience">Experience</a>
-        <a class="nav-link" href="#contact" data-target="contact">Contact</a>
       </div>
-
-      <button class="nav-toggle" id="navToggle" aria-label="Open Menu">☰</button>
+      <div class="menu">
+        <a class="pill" href="#home">Home</a>
+        <a class="pill" href="#projects">Projects</a>
+        <a class="pill" href="#skills">Skills</a>
+        <a class="pill" href="#experience">Experience</a>
+        <a class="pill" href="#contact">Contact</a>
+      </div>
     </div>
-  </nav>
+  </div>
 
-  <div class="container">
+  <div class="container" id="home">
+
     <!-- HERO -->
-    <section id="home" class="section hero">
+    <div class="hero">
       {% if profile %}
-        <div class="hero-grid">
-          <div>
-            <div class="pill">Open to Internship / Opportunities</div>
-            <h1 class="hero-title">{{ profile.name }}</h1>
-            <p class="hero-sub">{{ profile.headline }}</p>
-            <p class="hero-bio">{{ profile.bio }}</p>
+        {% if profile.avatar %}
+          <img class="avatar" src="{{ profile.avatar.url }}" alt="Profile photo">
+        {% elif profile.avatar_url %}
+          <img class="avatar" src="{{ profile.avatar_url }}" alt="Profile photo">
+        {% else %}
+          <div class="avatar-fallback">
+            {{ profile.name|slice:":1"|upper }}
+          </div>
+        {% endif %}
 
-            <div class="links">
-              {% if profile.resume_link %}<a class="btn primary" href="{{ profile.resume_link }}" target="_blank">Resume</a>{% endif %}
-              {% if profile.github %}<a class="btn" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}
-              {% if profile.linkedin %}<a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+        <div>
+          <h1 class="h-title">{{ profile.name }}</h1>
+          <p class="h-sub">{{ profile.headline }}</p>
+          <p class="h-bio">{{ profile.bio }}</p>
+
+          <div class="cta-row">
+            {% if profile.github %}
+              <a class="btn btn-primary" href="{{ profile.github }}" target="_blank">GitHub</a>
+            {% endif %}
+            {% if profile.linkedin %}
+              <a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>
+            {% endif %}
+            {% if profile.resume_link %}
+              <a class="btn" href="{{ profile.resume_link }}" target="_blank">Resume (PDF)</a>
+            {% endif %}
+            {% if profile.email %}
               <a class="btn" href="mailto:{{ profile.email }}">Email</a>
-              <button class="btn ghost" id="copyEmailBtn" data-email="{{ profile.email }}">Copy Email</button>
-            </div>
-
-            <div class="micro">
-              <span class="micro-item">📍 {{ profile.location|default:"India" }}</span>
-              <span class="micro-item">⚡ ML • Forecasting • XAI</span>
-            </div>
+            {% endif %}
           </div>
 
-          <div class="hero-card">
-            <h3 class="card-title">Quick Highlights</h3>
-            <ul class="bullets">
-              <li>Deployed ML apps with real live demos.</li>
-              <li>Time-series forecasting + explainability (SHAP).</li>
-              <li>Strong Python stack: XGBoost, Optuna, PyTorch.</li>
-            </ul>
-            <div class="divider"></div>
-            <p class="muted small">
-              Update content anytime via:
-              <a class="inline-link" href="/admin/" target="_blank">/admin</a>
-            </p>
-          </div>
+          {% if profile.location %}
+            <p class="muted" style="margin-top:10px;">📍 {{ profile.location }}</p>
+          {% endif %}
         </div>
       {% else %}
-        <div class="hero-empty">
-          <h1 class="hero-title">Portfolio</h1>
-          <p class="hero-sub">Add your profile from <a class="inline-link" href="/admin/">/admin</a></p>
+        <div>
+          <h1 class="h-title">Portfolio</h1>
+          <p class="h-sub">Add your profile from <a href="/admin/" target="_blank">/admin</a></p>
         </div>
       {% endif %}
-    </section>
+    </div>
 
     <!-- PROJECTS -->
-    <section id="projects" class="section">
-      <div class="section-head">
-        <h2>Projects</h2>
-        <p class="muted">Search, filter, and click a card for full details.</p>
-      </div>
-
-      <h3 class="subhead">Featured</h3>
-      <div class="grid">
-        {% for p in featured %}
-          <div class="card project-card"
-               data-title="{{ p.title|lower }}"
-               data-tech="{{ p.tech_stack|lower }}"
-               data-tagline="{{ p.tagline|escape }}"
-               data-desc="{{ p.description|escape }}"
-               data-live="{{ p.live_demo }}"
-               data-github="{{ p.github_repo }}">
-            <div class="card-top">
-              <h4 class="card-h">{{ p.title }}</h4>
-              <span class="badge">Featured</span>
-            </div>
-            <p class="tagline">{{ p.tagline }}</p>
-            <p class="stack">{{ p.tech_stack }}</p>
-            <div class="cardlinks">
-              {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
-              {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
-            </div>
-          </div>
-        {% empty %}
-          <p class="muted">No featured projects yet.</p>
-        {% endfor %}
-      </div>
+    <div class="section" id="projects">
+      <h2>Projects</h2>
+      <p class="lead">Search, filter, and click a card for full details.</p>
 
       <div class="controls">
-        <input id="projectSearch" class="input" type="text" placeholder="Search projects (title/tech)..." />
-        <select id="techFilter" class="select">
-          <option value="">All Tech</option>
+        <input id="searchBox" type="text" placeholder="Search projects (title/tech)..." />
+        <select id="techFilter">
+          <option value="all">All Tech</option>
         </select>
       </div>
 
-      <h3 class="subhead">All Projects</h3>
-      <div class="grid" id="projectsGrid">
+      <!-- Featured -->
+      <h3 style="margin: 12px 0 10px;">Featured</h3>
+      <div class="grid" id="featuredGrid">
         {% for p in projects %}
+          {% if p.is_featured %}
           <div class="card project-card"
-               data-title="{{ p.title|lower }}"
-               data-tech="{{ p.tech_stack|lower }}"
+               data-title="{{ p.title|escape }}"
                data-tagline="{{ p.tagline|escape }}"
                data-desc="{{ p.description|escape }}"
-               data-live="{{ p.live_demo }}"
-               data-github="{{ p.github_repo }}">
-            <h4 class="card-h">{{ p.title }}</h4>
-            <p class="tagline">{{ p.tagline }}</p>
-            <p class="desc">{{ p.description|truncatechars:160 }}</p>
-            <p class="stack">{{ p.tech_stack }}</p>
-            <div class="cardlinks">
+               data-tech="{{ p.tech_stack|escape }}"
+               data-live="{{ p.live_demo|default:'' }}"
+               data-github="{{ p.github_repo|default:'' }}"
+               data-pdf="{% if p.pdf %}{{ p.pdf.url }}{% elif p.pdf_url %}{{ p.pdf_url }}{% else %}{% endif %}"
+               data-img="{% if p.image %}{{ p.image.url }}{% elif p.image_url %}{{ p.image_url }}{% else %}{% endif %}">
+            <h3>{{ p.title }}</h3>
+            <div class="muted">{{ p.tagline }}</div>
+
+            {% if p.image %}
+              <img class="card-img" src="{{ p.image.url }}" alt="{{ p.title }}">
+            {% elif p.image_url %}
+              <img class="card-img" src="{{ p.image_url }}" alt="{{ p.title }}">
+            {% endif %}
+
+            <p class="muted" style="margin-top:10px;">
+              {{ p.description|truncatechars:140 }}
+            </p>
+
+            <div class="chips">
+              {% for t in p.tech_stack.split "," %}
+                <span class="chip">{{ t }}</span>
+              {% endfor %}
+            </div>
+
+            <div class="links">
               {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
               {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
+              {% if p.pdf %}<a href="{{ p.pdf.url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>
+              {% elif p.pdf_url %}<a href="{{ p.pdf_url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>{% endif %}
             </div>
           </div>
-        {% empty %}
-          <p class="muted">No projects added yet.</p>
+          {% endif %}
         {% endfor %}
       </div>
-    </section>
 
-    <!-- SKILLS -->
-    <section id="skills" class="section">
-      <div class="section-head">
+      <!-- All Projects -->
+      <h3 style="margin: 20px 0 10px;">All Projects</h3>
+      <div class="grid" id="allGrid">
+        {% for p in projects %}
+          <div class="card project-card"
+               data-title="{{ p.title|escape }}"
+               data-tagline="{{ p.tagline|escape }}"
+               data-desc="{{ p.description|escape }}"
+               data-tech="{{ p.tech_stack|escape }}"
+               data-live="{{ p.live_demo|default:'' }}"
+               data-github="{{ p.github_repo|default:'' }}"
+               data-pdf="{% if p.pdf %}{{ p.pdf.url }}{% elif p.pdf_url %}{{ p.pdf_url }}{% else %}{% endif %}"
+               data-img="{% if p.image %}{{ p.image.url }}{% elif p.image_url %}{{ p.image_url }}{% else %}{% endif %}">
+            <h3>{{ p.title }}</h3>
+            <div class="muted">{{ p.tagline }}</div>
+
+            {% if p.image %}
+              <img class="card-img" src="{{ p.image.url }}" alt="{{ p.title }}">
+            {% elif p.image_url %}
+              <img class="card-img" src="{{ p.image_url }}" alt="{{ p.title }}">
+            {% endif %}
+
+            <p class="muted" style="margin-top:10px;">
+              {{ p.description|truncatechars:140 }}
+            </p>
+
+            <div class="chips">
+              {% for t in p.tech_stack.split "," %}
+                <span class="chip">{{ t }}</span>
+              {% endfor %}
+            </div>
+
+            <div class="links">
+              {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
+              {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
+              {% if p.pdf %}<a href="{{ p.pdf.url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>
+              {% elif p.pdf_url %}<a href="{{ p.pdf_url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- SKILLS + EXPERIENCE -->
+    <div class="section two-col">
+      <div class="list-card" id="skills">
         <h2>Skills</h2>
-        <p class="muted">Core tools I use for ML, forecasting, and deployment.</p>
-      </div>
+        <p class="lead">Core tools I use for ML, forecasting, and deployment.</p>
 
-      <div class="chips">
-        {% for s in skills %}
-          <span class="chip">{{ s.name }}</span>
-        {% empty %}
-          <p class="muted">Add skills from <a class="inline-link" href="/admin/">/admin</a></p>
-        {% endfor %}
-      </div>
-    </section>
-
-    <!-- EXPERIENCE -->
-    <section id="experience" class="section">
-      <div class="section-head">
-        <h2>Experience</h2>
-        <p class="muted">What I’ve built and shipped.</p>
-      </div>
-
-      {% for e in exp %}
-        <div class="card">
-          <div class="card-top">
-            <h4 class="card-h">{{ e.role }} — {{ e.org }}</h4>
-            <span class="badge">{{ e.start }} - {{ e.end|default:"Present" }}</span>
-          </div>
-          <p class="desc">{{ e.details }}</p>
-        </div>
-      {% empty %}
-        <p class="muted">Add experience from <a class="inline-link" href="/admin/">/admin</a></p>
-      {% endfor %}
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-      <div class="section-head">
-        <h2>Contact</h2>
-        <p class="muted">Best way to reach me: email.</p>
-      </div>
-
-      <div class="contact-card">
-        {% if profile %}
-          <div class="contact-row">
-            <div>
-              <p class="muted small">Email</p>
-              <p class="contact-main">{{ profile.email }}</p>
+        {% if skills %}
+          {% for s in skills %}
+            <div class="skill-row">
+              <div>{{ s.name }}</div>
+              {% if s.level %}<span class="tag">{{ s.level }}</span>{% endif %}
             </div>
-            <div class="contact-actions">
-              <a class="btn primary" href="mailto:{{ profile.email }}">Send Email</a>
-              <button class="btn ghost" id="copyEmailBtn2" data-email="{{ profile.email }}">Copy Email</button>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="contact-actions">
-            {% if profile.github %}<a class="btn" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}
-            {% if profile.linkedin %}<a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
-            {% if profile.resume_link %}<a class="btn" href="{{ profile.resume_link }}" target="_blank">Resume</a>{% endif %}
-          </div>
+          {% endfor %}
         {% else %}
-          <p class="muted">Add contact info in Profile from <a class="inline-link" href="/admin/">/admin</a></p>
+          <p class="muted">Add skills from <a href="/admin/" target="_blank">/admin</a></p>
         {% endif %}
       </div>
-    </section>
 
-    <footer class="footer">
-      <p class="muted small">
-        © {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %} • Built with Django •
-        <a class="inline-link" href="#home">Back to top</a>
-      </p>
-    </footer>
+      <div class="list-card" id="experience">
+        <h2>Experience</h2>
+        <p class="lead">What I’ve built and shipped.</p>
+
+        {% if experience %}
+          {% for e in experience %}
+            <div style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
+              <div style="display:flex; justify-content:space-between; gap:10px;">
+                <div style="font-weight:700;">{{ e.role }}{% if e.org %} • {{ e.org }}{% endif %}</div>
+                <div class="muted" style="white-space:nowrap;">{{ e.start }}{% if e.end %} - {{ e.end }}{% endif %}</div>
+              </div>
+
+              <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
+                {% if e.image %}
+                  <img class="mini-img" src="{{ e.image.url }}" alt="{{ e.org }}">
+                {% elif e.image_url %}
+                  <img class="mini-img" src="{{ e.image_url }}" alt="{{ e.org }}">
+                {% endif %}
+                <div class="muted">{{ e.details|truncatechars:140 }}</div>
+              </div>
+
+              <div class="links" style="margin-top:8px;">
+                {% if e.pdf %}<a href="{{ e.pdf.url }}" target="_blank">Proof PDF</a>
+                {% elif e.pdf_url %}<a href="{{ e.pdf_url }}" target="_blank">Proof PDF</a>{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="muted">Add experience from <a href="/admin/" target="_blank">/admin</a></p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section" id="contact">
+      <h2>Contact</h2>
+      <p class="lead">Reach out for internships, collaborations, or project discussions.</p>
+
+      {% if profile %}
+        <div class="list-card">
+          <p style="margin:0;">
+            <b>Email:</b> <a href="mailto:{{ profile.email }}">{{ profile.email }}</a><br/>
+            {% if profile.github %}<b>GitHub:</b> <a href="{{ profile.github }}" target="_blank">{{ profile.github }}</a><br/>{% endif %}
+            {% if profile.linkedin %}<b>LinkedIn:</b> <a href="{{ profile.linkedin }}" target="_blank">{{ profile.linkedin }}</a><br/>{% endif %}
+            {% if profile.resume_link %}<b>Resume:</b> <a href="{{ profile.resume_link }}" target="_blank">Open PDF</a>{% endif %}
+          </p>
+        </div>
+      {% else %}
+        <p class="muted">Add your profile from <a href="/admin/" target="_blank">/admin</a></p>
+      {% endif %}
+    </div>
+
+    <div class="footer">
+      © {% now "Y" %} {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %} • Built with Django
+    </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <button id="closeModal" class="modal-close" aria-label="Close">×</button>
-      <h3 id="mTitle"></h3>
-      <p id="mTagline" class="tagline"></p>
-      <p id="mDesc" class="desc"></p>
-      <p id="mTech" class="stack"></p>
-
-      <div class="modal-actions">
-        <a id="mLive" target="_blank" class="linkbtn">Open Live</a>
-        <button id="mCopyLive" class="linkbtn ghostbtn" type="button">Copy Live Link</button>
-        <a id="mGit" target="_blank" class="linkbtn">Open GitHub</a>
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title" id="mTitle">Project</h3>
+          <div class="muted" id="mTagline"></div>
+        </div>
+        <button class="modal-close" id="mClose">Close</button>
+      </div>
+      <div class="modal-body">
+        <img id="mImg" class="modal-img" style="display:none;" alt="project image">
+        <p id="mDesc"></p>
+        <p class="muted"><b>Tech:</b> <span id="mTech"></span></p>
+        <div class="links">
+          <a id="mLive" href="#" target="_blank" style="display:none;">Live</a>
+          <a id="mGit" href="#" target="_blank" style="display:none;">GitHub</a>
+          <a id="mPdf" href="#" target="_blank" style="display:none;">PDF</a>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" class="toast hidden">Copied!</div>
+  <script>
+    // Build Tech dropdown from all project tech stacks
+    const cards = Array.from(document.querySelectorAll(".project-card"));
+    const techSet = new Set();
+    cards.forEach(c => {
+      const tech = (c.dataset.tech || "").split(",").map(x => x.trim()).filter(Boolean);
+      tech.forEach(t => techSet.add(t.toLowerCase()));
+    });
 
-  <script src="/static/app.js"></script>
+    const techFilter = document.getElementById("techFilter");
+    [...techSet].sort().forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      techFilter.appendChild(opt);
+    });
+
+    const searchBox = document.getElementById("searchBox");
+
+    function applyFilters() {
+      const q = (searchBox.value || "").toLowerCase().trim();
+      const tech = techFilter.value;
+
+      cards.forEach(c => {
+        const title = (c.dataset.title || "").toLowerCase();
+        const tagline = (c.dataset.tagline || "").toLowerCase();
+        const stack = (c.dataset.tech || "").toLowerCase();
+
+        const matchQuery = !q || title.includes(q) || tagline.includes(q) || stack.includes(q);
+        const matchTech = (tech === "all") || stack.split(",").map(x => x.trim()).includes(tech);
+
+        c.style.display = (matchQuery && matchTech) ? "" : "none";
+      });
+    }
+
+    searchBox.addEventListener("input", applyFilters);
+    techFilter.addEventListener("change", applyFilters);
+
+    // Modal
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const mTitle = document.getElementById("mTitle");
+    const mTagline = document.getElementById("mTagline");
+    const mDesc = document.getElementById("mDesc");
+    const mTech = document.getElementById("mTech");
+    const mImg = document.getElementById("mImg");
+    const mLive = document.getElementById("mLive");
+    const mGit = document.getElementById("mGit");
+    const mPdf = document.getElementById("mPdf");
+    const mClose = document.getElementById("mClose");
+
+    function openModal(card){
+      mTitle.textContent = card.dataset.title || "Project";
+      mTagline.textContent = card.dataset.tagline || "";
+      mDesc.textContent = card.dataset.desc || "";
+      mTech.textContent = card.dataset.tech || "";
+
+      const img = card.dataset.img || "";
+      if(img){
+        mImg.src = img;
+        mImg.style.display = "";
+      } else {
+        mImg.style.display = "none";
+      }
+
+      const live = card.dataset.live || "";
+      const git = card.dataset.github || "";
+      const pdf = card.dataset.pdf || "";
+
+      mLive.style.display = live ? "" : "none";
+      mGit.style.display = git ? "" : "none";
+      mPdf.style.display = pdf ? "" : "none";
+
+      if(live) mLive.href = live;
+      if(git) mGit.href = git;
+      if(pdf) mPdf.href = pdf;
+
+      modalBackdrop.style.display = "flex";
+    }
+
+    function closeModal(){ modalBackdrop.style.display = "none"; }
+
+    cards.forEach(c => c.addEventListener("click", () => openModal(c)));
+    mClose.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeModal(); });
+    document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
+  </script>
 </body>
 </html>
