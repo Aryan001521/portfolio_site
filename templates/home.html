@@ -6,87 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% if profile %}{{ profile.name }}{% else %}My Portfolio{% endif %}</title>
 
-  <link rel="stylesheet" href="{% static 'style.css' %}?v=999">
-  <style>
-    /* ------- fallback styles (in case css missing) ------- */
-    :root{
-      --bg:#070b14;
-      --card:rgba(255,255,255,0.06);
-      --border:rgba(255,255,255,0.12);
-      --text:#e9eefc;
-      --muted:rgba(233,238,252,0.72);
-      --accent:#facc15;
-      --shadow: 0 18px 55px rgba(0,0,0,0.45);
-      --radius:18px;
-    }
-    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; background: radial-gradient(1200px 500px at 20% 0%, rgba(79,70,229,0.25), transparent 60%), radial-gradient(1200px 500px at 80% 10%, rgba(250,204,21,0.12), transparent 55%), var(--bg); color:var(--text); }
-    a{ color:#9cc3ff; text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-    .container{ max-width:1100px; margin:0 auto; padding:28px 16px 70px; }
-    .nav{ position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(7,11,20,0.65); border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .nav-inner{ max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;}
-    .brand{ font-weight:800; letter-spacing:0.2px; }
-    .menu{ display:flex; gap:14px; flex-wrap:wrap; }
-    .pill{ padding:8px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:999px; background: rgba(255,255,255,0.04); }
-    .pill:hover{ border-color: rgba(250,204,21,0.65); }
-    .hero{ margin-top:22px; padding:26px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); box-shadow: var(--shadow); display:flex; gap:18px; align-items:flex-start; }
-    .avatar{ height:92px; width:92px; border-radius:50%; object-fit:cover; border: 2px solid rgba(250,204,21,0.35); }
-    .avatar-fallback{ height:92px; width:92px; border-radius:50%; display:grid; place-items:center; font-weight:800; background: rgba(250,204,21,0.12); border:1px solid rgba(250,204,21,0.35); color: var(--text); }
-    .h-title{ font-size:34px; margin:0 0 6px; }
-    .h-sub{ margin:0 0 10px; color: var(--muted); font-size:16px; }
-    .h-bio{ margin:0; color: rgba(233,238,252,0.86); line-height:1.55; }
-    .cta-row{ margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius: 12px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--text); cursor:pointer; }
-    .btn:hover{ border-color: rgba(250,204,21,0.65); background: rgba(250,204,21,0.08); text-decoration:none; }
-    .btn-primary{ border-color: rgba(250,204,21,0.55); }
-    .section{ margin-top:34px; }
-    .section h2{ margin:0 0 8px; font-size:26px; }
-    .section p.lead{ margin:0 0 16px; color: var(--muted); }
-    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin: 12px 0 18px; }
-    input[type="text"], select{
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      border:1px solid rgba(255,255,255,0.12);
-      padding:10px 12px;
-      border-radius: 12px;
-      outline:none;
-    }
-    input[type="text"]{ min-width: 230px; }
-    select{ min-width: 160px; appearance:none; }
-    select option{ background-color: #0f172a; color:#fff; } /* fixes white options */
-    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
-    .card{ grid-column: span 6; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); border-radius: 16px; padding:16px; cursor:pointer; transition: transform .15s ease, border-color .15s ease; }
-    .card:hover{ transform: translateY(-2px); border-color: rgba(250,204,21,0.55); }
-    .card h3{ margin:0 0 6px; font-size:18px; }
-    .muted{ color: var(--muted); }
-    .card-img{ width:100%; max-height:190px; object-fit:cover; border-radius: 12px; border:1px solid rgba(255,255,255,0.10); margin:10px 0 10px; }
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .chip{ font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(233,238,252,0.9); }
-    .links{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
-    .mini-img{ height:42px; width:42px; border-radius: 10px; object-fit:cover; border:1px solid rgba(255,255,255,0.10); }
-    .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
-    .list-card{ border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); border-radius: 16px; padding:16px; }
-    .skill-row{ display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
-    .skill-row:last-child{ border-bottom:none; }
-    .tag{ font-size:12px; padding:5px 10px; border-radius:999px; border:1px solid rgba(250,204,21,0.35); background: rgba(250,204,21,0.08); }
-    .footer{ margin-top:44px; color: var(--muted); font-size:13px; text-align:center; }
-
-    /* Modal */
-    .modal-backdrop{ position:fixed; inset:0; background: rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:50; padding:18px; }
-    .modal{ width:min(900px, 96vw); border-radius: 18px; border:1px solid rgba(255,255,255,0.12); background: rgba(7,11,20,0.95); box-shadow: var(--shadow); overflow:hidden; }
-    .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding:16px; border-bottom:1px solid rgba(255,255,255,0.10); }
-    .modal-title{ margin:0; font-size:18px; }
-    .modal-close{ border:1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.04); color: var(--text); border-radius: 12px; padding:8px 12px; cursor:pointer; }
-    .modal-body{ padding:16px; }
-    .modal-body p{ color: rgba(233,238,252,0.86); line-height:1.55; }
-    .modal-img{ width:100%; max-height:320px; object-fit:cover; border-radius: 14px; border:1px solid rgba(255,255,255,0.10); }
-
-    @media (max-width: 860px){
-      .card{ grid-column: span 12; }
-      .two-col{ grid-template-columns: 1fr; }
-      .hero{ flex-direction: column; align-items:flex-start; }
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'style.css' %}?v=1001">
 </head>
 
 <body>
@@ -94,15 +14,18 @@
   <!-- NAV -->
   <div class="nav">
     <div class="nav-inner">
-      <div class="brand">
+      <a class="brand" href="#home">
         {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %}
-      </div>
-      <div class="menu">
-        <a class="pill" href="#home">Home</a>
-        <a class="pill" href="#projects">Projects</a>
-        <a class="pill" href="#skills">Skills</a>
-        <a class="pill" href="#experience">Experience</a>
-        <a class="pill" href="#contact">Contact</a>
+      </a>
+
+      <button class="nav-toggle" id="navToggle">Menu</button>
+
+      <div class="nav-links" id="navLinks">
+        <a class="nav-link" href="#home">Home</a>
+        <a class="nav-link" href="#projects">Projects</a>
+        <a class="nav-link" href="#skills">Skills</a>
+        <a class="nav-link" href="#experience">Experience</a>
+        <a class="nav-link" href="#contact">Contact</a>
       </div>
     </div>
   </div>
@@ -110,108 +33,109 @@
   <div class="container" id="home">
 
     <!-- HERO -->
-    <div class="hero">
-      {% if profile %}
-        {% if profile.avatar %}
-          <img class="avatar" src="{{ profile.avatar.url }}" alt="Profile photo">
-        {% elif profile.avatar_url %}
-          <img class="avatar" src="{{ profile.avatar_url }}" alt="Profile photo">
-        {% else %}
-          <div class="avatar-fallback">
-            {{ profile.name|slice:":1"|upper }}
-          </div>
-        {% endif %}
+    <div class="section hero">
+      <div class="hero-grid">
+        <div class="card hero-card">
+          <span class="pill">Recruiter-ready • Django • Admin Controlled</span>
 
-        <div>
-          <h1 class="h-title">{{ profile.name }}</h1>
-          <p class="h-sub">{{ profile.headline }}</p>
-          <p class="h-bio">{{ profile.bio }}</p>
+          {% if profile %}
+            <h1 class="hero-title">{{ profile.name }}</h1>
+            <p class="hero-sub">{{ profile.headline }}</p>
+            <p class="hero-bio">{{ profile.bio }}</p>
 
-          <div class="cta-row">
-            {% if profile.github %}
-              <a class="btn btn-primary" href="{{ profile.github }}" target="_blank">GitHub</a>
-            {% endif %}
-            {% if profile.linkedin %}
-              <a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>
-            {% endif %}
-            {% if profile.resume_link %}
-              <a class="btn" href="{{ profile.resume_link }}" target="_blank">Resume (PDF)</a>
-            {% endif %}
-            {% if profile.email %}
-              <a class="btn" href="mailto:{{ profile.email }}">Email</a>
-            {% endif %}
-          </div>
+            <div class="links">
+              {% if profile.github %}
+                <a class="btn primary" href="{{ profile.github }}" target="_blank">GitHub</a>
+              {% endif %}
+              {% if profile.linkedin %}
+                <a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>
+              {% endif %}
+              {% if profile.resume_link %}
+                <a class="btn ghost" href="{{ profile.resume_link }}" target="_blank">Resume (PDF)</a>
+              {% endif %}
+              {% if profile.email %}
+                <a class="btn" href="mailto:{{ profile.email }}">Email</a>
+              {% endif %}
+            </div>
 
-          {% if profile.location %}
-            <p class="muted" style="margin-top:10px;">📍 {{ profile.location }}</p>
+            <div class="micro">
+              {% if profile.location %}<div class="micro-item">📍 {{ profile.location }}</div>{% endif %}
+              <div class="micro-item">⚡ Live Projects + Proof PDFs</div>
+              <div class="micro-item">🧠 ML + Forecasting + Deployment</div>
+            </div>
+          {% else %}
+            <h1 class="hero-title">Portfolio</h1>
+            <p class="hero-sub">Add your profile from <a class="inline-link" href="/admin/" target="_blank">/admin</a></p>
           {% endif %}
         </div>
-      {% else %}
-        <div>
-          <h1 class="h-title">Portfolio</h1>
-          <p class="h-sub">Add your profile from <a href="/admin/" target="_blank">/admin</a></p>
+
+        <div class="card hero-card">
+          <h3 class="card-h">Quick Actions</h3>
+          <ul class="bullets">
+            <li>Add Profile, Skills, Projects, Experience from <a class="inline-link" href="/admin/" target="_blank">Admin Panel</a></li>
+            <li>Projects can have Live Demo + GitHub + Image + PDF Proof</li>
+            <li>Skills can have level tags (e.g., Intermediate, Advanced)</li>
+          </ul>
         </div>
-      {% endif %}
+      </div>
     </div>
 
     <!-- PROJECTS -->
     <div class="section" id="projects">
-      <h2>Projects</h2>
-      <p class="lead">Search, filter, and click a card for full details.</p>
+      <div class="section-head">
+        <h2>Projects</h2>
+        <p class="muted">Search, filter by tech, and click a project card for full details.</p>
+      </div>
 
       <div class="controls">
-        <input id="searchBox" type="text" placeholder="Search projects (title/tech)..." />
-        <select id="techFilter">
+        <input class="input" id="searchBox" type="text" placeholder="Search projects (title/tech)..." />
+        <select class="select" id="techFilter">
           <option value="all">All Tech</option>
         </select>
       </div>
 
       <!-- Featured -->
-      <h3 style="margin: 12px 0 10px;">Featured</h3>
+      <h3 class="subhead">Featured</h3>
       <div class="grid" id="featuredGrid">
         {% for p in projects %}
           {% if p.is_featured %}
-          <div class="card project-card"
-               data-title="{{ p.title|escape }}"
-               data-tagline="{{ p.tagline|escape }}"
-               data-desc="{{ p.description|escape }}"
-               data-tech="{{ p.tech_stack|escape }}"
-               data-live="{{ p.live_demo|default:'' }}"
-               data-github="{{ p.github_repo|default:'' }}"
-               data-pdf="{% if p.pdf %}{{ p.pdf.url }}{% elif p.pdf_url %}{{ p.pdf_url }}{% else %}{% endif %}"
-               data-img="{% if p.image %}{{ p.image.url }}{% elif p.image_url %}{{ p.image_url }}{% else %}{% endif %}">
-            <h3>{{ p.title }}</h3>
-            <div class="muted">{{ p.tagline }}</div>
+            <div class="card project-card"
+                 data-title="{{ p.title|escape }}"
+                 data-tagline="{{ p.tagline|escape }}"
+                 data-desc="{{ p.description|escape }}"
+                 data-tech="{{ p.tech_stack|escape }}"
+                 data-live="{{ p.live_demo|default:'' }}"
+                 data-github="{{ p.github_repo|default:'' }}"
+                 data-pdf="{% if p.pdf %}{{ p.pdf.url }}{% elif p.pdf_url %}{{ p.pdf_url }}{% else %}{% endif %}"
+                 data-img="{% if p.image %}{{ p.image.url }}{% elif p.image_url %}{{ p.image_url }}{% else %}{% endif %}">
+              <div class="card-top">
+                <h3 class="card-h">{{ p.title }}</h3>
+                <span class="badge">Featured</span>
+              </div>
+              <div class="tagline muted">{{ p.tagline }}</div>
 
-            {% if p.image %}
-              <img class="card-img" src="{{ p.image.url }}" alt="{{ p.title }}">
-            {% elif p.image_url %}
-              <img class="card-img" src="{{ p.image_url }}" alt="{{ p.title }}">
-            {% endif %}
+              {% if p.image %}
+                <img class="card-img" src="{{ p.image.url }}" alt="{{ p.title }}">
+              {% elif p.image_url %}
+                <img class="card-img" src="{{ p.image_url }}" alt="{{ p.title }}">
+              {% endif %}
 
-            <p class="muted" style="margin-top:10px;">
-              {{ p.description|truncatechars:140 }}
-            </p>
+              <p class="desc">{{ p.description|truncatechars:160 }}</p>
+              <p class="stack">Tech: {{ p.tech_stack }}</p>
 
-            <div class="chips">
-              {% for t in p.tech_stack.split "," %}
-                <span class="chip">{{ t }}</span>
-              {% endfor %}
+              <div class="cardlinks">
+                {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
+                {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
+                {% if p.pdf %}<a href="{{ p.pdf.url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>
+                {% elif p.pdf_url %}<a href="{{ p.pdf_url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>{% endif %}
+              </div>
             </div>
-
-            <div class="links">
-              {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
-              {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
-              {% if p.pdf %}<a href="{{ p.pdf.url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>
-              {% elif p.pdf_url %}<a href="{{ p.pdf_url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>{% endif %}
-            </div>
-          </div>
           {% endif %}
         {% endfor %}
       </div>
 
       <!-- All Projects -->
-      <h3 style="margin: 20px 0 10px;">All Projects</h3>
+      <h3 class="subhead">All Projects</h3>
       <div class="grid" id="allGrid">
         {% for p in projects %}
           <div class="card project-card"
@@ -223,8 +147,11 @@
                data-github="{{ p.github_repo|default:'' }}"
                data-pdf="{% if p.pdf %}{{ p.pdf.url }}{% elif p.pdf_url %}{{ p.pdf_url }}{% else %}{% endif %}"
                data-img="{% if p.image %}{{ p.image.url }}{% elif p.image_url %}{{ p.image_url }}{% else %}{% endif %}">
-            <h3>{{ p.title }}</h3>
-            <div class="muted">{{ p.tagline }}</div>
+            <div class="card-top">
+              <h3 class="card-h">{{ p.title }}</h3>
+              {% if p.is_featured %}<span class="badge">Featured</span>{% endif %}
+            </div>
+            <div class="tagline muted">{{ p.tagline }}</div>
 
             {% if p.image %}
               <img class="card-img" src="{{ p.image.url }}" alt="{{ p.title }}">
@@ -232,17 +159,10 @@
               <img class="card-img" src="{{ p.image_url }}" alt="{{ p.title }}">
             {% endif %}
 
-            <p class="muted" style="margin-top:10px;">
-              {{ p.description|truncatechars:140 }}
-            </p>
+            <p class="desc">{{ p.description|truncatechars:160 }}</p>
+            <p class="stack">Tech: {{ p.tech_stack }}</p>
 
-            <div class="chips">
-              {% for t in p.tech_stack.split "," %}
-                <span class="chip">{{ t }}</span>
-              {% endfor %}
-            </div>
-
-            <div class="links">
+            <div class="cardlinks">
               {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
               {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
               {% if p.pdf %}<a href="{{ p.pdf.url }}" target="_blank" onclick="event.stopPropagation()">PDF</a>
@@ -255,51 +175,37 @@
 
     <!-- SKILLS + EXPERIENCE -->
     <div class="section two-col">
-      <div class="list-card" id="skills">
+      <div class="card" id="skills">
         <h2>Skills</h2>
-        <p class="lead">Core tools I use for ML, forecasting, and deployment.</p>
+        <p class="muted small">Add skills + levels from Admin.</p>
 
         {% if skills %}
-          {% for s in skills %}
-            <div class="skill-row">
-              <div>{{ s.name }}</div>
-              {% if s.level %}<span class="tag">{{ s.level }}</span>{% endif %}
-            </div>
-          {% endfor %}
+          <div class="chips">
+            {% for s in skills %}
+              <span class="chip">{{ s.name }}{% if s.level %} • {{ s.level }}{% endif %}</span>
+            {% endfor %}
+          </div>
         {% else %}
-          <p class="muted">Add skills from <a href="/admin/" target="_blank">/admin</a></p>
+          <p class="muted">Add skills from <a class="inline-link" href="/admin/" target="_blank">/admin</a></p>
         {% endif %}
       </div>
 
-      <div class="list-card" id="experience">
+      <div class="card" id="experience">
         <h2>Experience</h2>
-        <p class="lead">What I’ve built and shipped.</p>
+        <p class="muted small">Projects shipped, hackathons, internships, etc.</p>
 
         {% if experience %}
-          {% for e in experience %}
-            <div style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
-              <div style="display:flex; justify-content:space-between; gap:10px;">
-                <div style="font-weight:700;">{{ e.role }}{% if e.org %} • {{ e.org }}{% endif %}</div>
-                <div class="muted" style="white-space:nowrap;">{{ e.start }}{% if e.end %} - {{ e.end }}{% endif %}</div>
-              </div>
-
-              <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
-                {% if e.image %}
-                  <img class="mini-img" src="{{ e.image.url }}" alt="{{ e.org }}">
-                {% elif e.image_url %}
-                  <img class="mini-img" src="{{ e.image_url }}" alt="{{ e.org }}">
-                {% endif %}
-                <div class="muted">{{ e.details|truncatechars:140 }}</div>
-              </div>
-
-              <div class="links" style="margin-top:8px;">
-                {% if e.pdf %}<a href="{{ e.pdf.url }}" target="_blank">Proof PDF</a>
-                {% elif e.pdf_url %}<a href="{{ e.pdf_url }}" target="_blank">Proof PDF</a>{% endif %}
-              </div>
-            </div>
-          {% endfor %}
+          <ul class="bullets">
+            {% for e in experience %}
+              <li>
+                <b>{{ e.role }}</b>{% if e.org %} — {{ e.org }}{% endif %}
+                <div class="muted small">{{ e.start }}{% if e.end %} - {{ e.end }}{% endif %}</div>
+                <div class="muted">{{ e.details|truncatechars:180 }}</div>
+              </li>
+            {% endfor %}
+          </ul>
         {% else %}
-          <p class="muted">Add experience from <a href="/admin/" target="_blank">/admin</a></p>
+          <p class="muted">Add experience from <a class="inline-link" href="/admin/" target="_blank">/admin</a></p>
         {% endif %}
       </div>
     </div>
@@ -307,52 +213,59 @@
     <!-- CONTACT -->
     <div class="section" id="contact">
       <h2>Contact</h2>
-      <p class="lead">Reach out for internships, collaborations, or project discussions.</p>
+      <p class="muted">For internships, collaborations, or project discussions.</p>
 
       {% if profile %}
-        <div class="list-card">
-          <p style="margin:0;">
-            <b>Email:</b> <a href="mailto:{{ profile.email }}">{{ profile.email }}</a><br/>
-            {% if profile.github %}<b>GitHub:</b> <a href="{{ profile.github }}" target="_blank">{{ profile.github }}</a><br/>{% endif %}
-            {% if profile.linkedin %}<b>LinkedIn:</b> <a href="{{ profile.linkedin }}" target="_blank">{{ profile.linkedin }}</a><br/>{% endif %}
-            {% if profile.resume_link %}<b>Resume:</b> <a href="{{ profile.resume_link }}" target="_blank">Open PDF</a>{% endif %}
-          </p>
+        <div class="contact-card">
+          <div class="contact-row">
+            <div>
+              <div class="contact-main">{{ profile.email }}</div>
+              <div class="muted small">
+                {% if profile.location %}📍 {{ profile.location }}{% endif %}
+              </div>
+            </div>
+            <div class="contact-actions">
+              {% if profile.email %}<a class="btn" href="mailto:{{ profile.email }}">Email</a>{% endif %}
+              {% if profile.github %}<a class="btn" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}
+              {% if profile.linkedin %}<a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="muted small">© {% now "Y" %} {{ profile.name }} • Built with Django</div>
         </div>
       {% else %}
-        <p class="muted">Add your profile from <a href="/admin/" target="_blank">/admin</a></p>
+        <p class="muted">Add your profile from <a class="inline-link" href="/admin/" target="_blank">/admin</a></p>
       {% endif %}
     </div>
 
-    <div class="footer">
-      © {% now "Y" %} {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %} • Built with Django
-    </div>
   </div>
 
   <!-- MODAL -->
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3 class="modal-title" id="mTitle">Project</h3>
-          <div class="muted" id="mTagline"></div>
-        </div>
-        <button class="modal-close" id="mClose">Close</button>
-      </div>
-      <div class="modal-body">
-        <img id="mImg" class="modal-img" style="display:none;" alt="project image">
-        <p id="mDesc"></p>
-        <p class="muted"><b>Tech:</b> <span id="mTech"></span></p>
-        <div class="links">
-          <a id="mLive" href="#" target="_blank" style="display:none;">Live</a>
-          <a id="mGit" href="#" target="_blank" style="display:none;">GitHub</a>
-          <a id="mPdf" href="#" target="_blank" style="display:none;">PDF</a>
-        </div>
+  <div class="modal hidden" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <h3 id="mTitle"></h3>
+      <p class="muted" id="mTagline"></p>
+      <img id="mImg" style="display:none; width:100%; border-radius:14px; margin:12px 0; border:1px solid rgba(255,255,255,.10);" alt="project image">
+      <p id="mDesc"></p>
+      <p class="muted"><b>Tech:</b> <span id="mTech"></span></p>
+
+      <div class="modal-actions">
+        <a class="linkbtn" id="mLive" href="#" target="_blank" style="display:none;">Live</a>
+        <a class="linkbtn ghostbtn" id="mGit" href="#" target="_blank" style="display:none;">GitHub</a>
+        <a class="linkbtn ghostbtn" id="mPdf" href="#" target="_blank" style="display:none;">PDF</a>
       </div>
     </div>
   </div>
 
   <script>
-    // Build Tech dropdown from all project tech stacks
+    // Mobile nav
+    const navToggle = document.getElementById("navToggle");
+    const navLinks = document.getElementById("navLinks");
+    navToggle?.addEventListener("click", () => navLinks.classList.toggle("open"));
+    navLinks?.querySelectorAll("a")?.forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+
+    // Build Tech dropdown
     const cards = Array.from(document.querySelectorAll(".project-card"));
     const techSet = new Set();
     cards.forEach(c => {
@@ -386,11 +299,12 @@
       });
     }
 
-    searchBox.addEventListener("input", applyFilters);
-    techFilter.addEventListener("change", applyFilters);
+    searchBox?.addEventListener("input", applyFilters);
+    techFilter?.addEventListener("change", applyFilters);
 
     // Modal
-    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modal = document.getElementById("modal");
+    const modalClose = document.getElementById("modalClose");
     const mTitle = document.getElementById("mTitle");
     const mTagline = document.getElementById("mTagline");
     const mDesc = document.getElementById("mDesc");
@@ -399,7 +313,6 @@
     const mLive = document.getElementById("mLive");
     const mGit = document.getElementById("mGit");
     const mPdf = document.getElementById("mPdf");
-    const mClose = document.getElementById("mClose");
 
     function openModal(card){
       mTitle.textContent = card.dataset.title || "Project";
@@ -427,15 +340,29 @@
       if(git) mGit.href = git;
       if(pdf) mPdf.href = pdf;
 
-      modalBackdrop.style.display = "flex";
+      modal.classList.remove("hidden");
     }
 
-    function closeModal(){ modalBackdrop.style.display = "none"; }
+    function closeModal(){ modal.classList.add("hidden"); }
 
     cards.forEach(c => c.addEventListener("click", () => openModal(c)));
-    mClose.addEventListener("click", closeModal);
-    modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeModal(); });
+    modalClose?.addEventListener("click", closeModal);
+    modal?.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
     document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
+
+    // Active nav highlight
+    const navA = Array.from(document.querySelectorAll(".nav-link"));
+    const sections = ["home","projects","skills","experience","contact"].map(id => document.getElementById(id)).filter(Boolean);
+
+    window.addEventListener("scroll", () => {
+      let current = "home";
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 120;
+        if(window.scrollY >= top) current = sec.id;
+      });
+      navA.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + current));
+    });
   </script>
+
 </body>
 </html>
