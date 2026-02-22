@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% if profile %}{{ profile.name }}{% else %}My Portfolio{% endif %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#home">
+        {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %}
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a class="nav-link" href="#home" data-target="home">Home</a>
+        <a class="nav-link" href="#projects" data-target="projects">Projects</a>
+        <a class="nav-link" href="#skills" data-target="skills">Skills</a>
+        <a class="nav-link" href="#experience" data-target="experience">Experience</a>
+        <a class="nav-link" href="#contact" data-target="contact">Contact</a>
+      </div>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open Menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- HERO -->
+    <section id="home" class="section hero">
+      {% if profile %}
+        <div class="hero-grid">
+          <div>
+            <div class="pill">Open to Internship / Opportunities</div>
+            <h1 class="hero-title">{{ profile.name }}</h1>
+            <p class="hero-sub">{{ profile.headline }}</p>
+            <p class="hero-bio">{{ profile.bio }}</p>
+
+            <div class="links">
+              {% if profile.resume_link %}<a class="btn primary" href="{{ profile.resume_link }}" target="_blank">Resume</a>{% endif %}
+              {% if profile.github %}<a class="btn" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}
+              {% if profile.linkedin %}<a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+              <a class="btn" href="mailto:{{ profile.email }}">Email</a>
+              <button class="btn ghost" id="copyEmailBtn" data-email="{{ profile.email }}">Copy Email</button>
+            </div>
+
+            <div class="micro">
+              <span class="micro-item">📍 {{ profile.location|default:"India" }}</span>
+              <span class="micro-item">⚡ ML • Forecasting • XAI</span>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <h3 class="card-title">Quick Highlights</h3>
+            <ul class="bullets">
+              <li>Deployed ML apps with real live demos.</li>
+              <li>Time-series forecasting + explainability (SHAP).</li>
+              <li>Strong Python stack: XGBoost, Optuna, PyTorch.</li>
+            </ul>
+            <div class="divider"></div>
+            <p class="muted small">
+              Update content anytime via:
+              <a class="inline-link" href="/admin/" target="_blank">/admin</a>
+            </p>
+          </div>
+        </div>
+      {% else %}
+        <div class="hero-empty">
+          <h1 class="hero-title">Portfolio</h1>
+          <p class="hero-sub">Add your profile from <a class="inline-link" href="/admin/">/admin</a></p>
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section">
+      <div class="section-head">
+        <h2>Projects</h2>
+        <p class="muted">Search, filter, and click a card for full details.</p>
+      </div>
+
+      <h3 class="subhead">Featured</h3>
+      <div class="grid">
+        {% for p in featured %}
+          <div class="card project-card"
+               data-title="{{ p.title|lower }}"
+               data-tech="{{ p.tech_stack|lower }}"
+               data-tagline="{{ p.tagline|escape }}"
+               data-desc="{{ p.description|escape }}"
+               data-live="{{ p.live_demo }}"
+               data-github="{{ p.github_repo }}">
+            <div class="card-top">
+              <h4 class="card-h">{{ p.title }}</h4>
+              <span class="badge">Featured</span>
+            </div>
+            <p class="tagline">{{ p.tagline }}</p>
+            <p class="stack">{{ p.tech_stack }}</p>
+            <div class="cardlinks">
+              {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
+              {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="muted">No featured projects yet.</p>
+        {% endfor %}
+      </div>
+
+      <div class="controls">
+        <input id="projectSearch" class="input" type="text" placeholder="Search projects (title/tech)..." />
+        <select id="techFilter" class="select">
+          <option value="">All Tech</option>
+        </select>
+      </div>
+
+      <h3 class="subhead">All Projects</h3>
+      <div class="grid" id="projectsGrid">
+        {% for p in projects %}
+          <div class="card project-card"
+               data-title="{{ p.title|lower }}"
+               data-tech="{{ p.tech_stack|lower }}"
+               data-tagline="{{ p.tagline|escape }}"
+               data-desc="{{ p.description|escape }}"
+               data-live="{{ p.live_demo }}"
+               data-github="{{ p.github_repo }}">
+            <h4 class="card-h">{{ p.title }}</h4>
+            <p class="tagline">{{ p.tagline }}</p>
+            <p class="desc">{{ p.description|truncatechars:160 }}</p>
+            <p class="stack">{{ p.tech_stack }}</p>
+            <div class="cardlinks">
+              {% if p.live_demo %}<a href="{{ p.live_demo }}" target="_blank" onclick="event.stopPropagation()">Live</a>{% endif %}
+              {% if p.github_repo %}<a href="{{ p.github_repo }}" target="_blank" onclick="event.stopPropagation()">GitHub</a>{% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="muted">No projects added yet.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+      <div class="section-head">
+        <h2>Skills</h2>
+        <p class="muted">Core tools I use for ML, forecasting, and deployment.</p>
+      </div>
+
+      <div class="chips">
+        {% for s in skills %}
+          <span class="chip">{{ s.name }}</span>
+        {% empty %}
+          <p class="muted">Add skills from <a class="inline-link" href="/admin/">/admin</a></p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="section">
+      <div class="section-head">
+        <h2>Experience</h2>
+        <p class="muted">What I’ve built and shipped.</p>
+      </div>
+
+      {% for e in exp %}
+        <div class="card">
+          <div class="card-top">
+            <h4 class="card-h">{{ e.role }} — {{ e.org }}</h4>
+            <span class="badge">{{ e.start }} - {{ e.end|default:"Present" }}</span>
+          </div>
+          <p class="desc">{{ e.details }}</p>
+        </div>
+      {% empty %}
+        <p class="muted">Add experience from <a class="inline-link" href="/admin/">/admin</a></p>
+      {% endfor %}
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="section-head">
+        <h2>Contact</h2>
+        <p class="muted">Best way to reach me: email.</p>
+      </div>
+
+      <div class="contact-card">
+        {% if profile %}
+          <div class="contact-row">
+            <div>
+              <p class="muted small">Email</p>
+              <p class="contact-main">{{ profile.email }}</p>
+            </div>
+            <div class="contact-actions">
+              <a class="btn primary" href="mailto:{{ profile.email }}">Send Email</a>
+              <button class="btn ghost" id="copyEmailBtn2" data-email="{{ profile.email }}">Copy Email</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="contact-actions">
+            {% if profile.github %}<a class="btn" href="{{ profile.github }}" target="_blank">GitHub</a>{% endif %}
+            {% if profile.linkedin %}<a class="btn" href="{{ profile.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+            {% if profile.resume_link %}<a class="btn" href="{{ profile.resume_link }}" target="_blank">Resume</a>{% endif %}
+          </div>
+        {% else %}
+          <p class="muted">Add contact info in Profile from <a class="inline-link" href="/admin/">/admin</a></p>
+        {% endif %}
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted small">
+        © {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %} • Built with Django •
+        <a class="inline-link" href="#home">Back to top</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="closeModal" class="modal-close" aria-label="Close">×</button>
+      <h3 id="mTitle"></h3>
+      <p id="mTagline" class="tagline"></p>
+      <p id="mDesc" class="desc"></p>
+      <p id="mTech" class="stack"></p>
+
+      <div class="modal-actions">
+        <a id="mLive" target="_blank" class="linkbtn">Open Live</a>
+        <button id="mCopyLive" class="linkbtn ghostbtn" type="button">Copy Live Link</button>
+        <a id="mGit" target="_blank" class="linkbtn">Open GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden">Copied!</div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
